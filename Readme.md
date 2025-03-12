@@ -432,7 +432,6 @@ restart:
     return 0;
 }
 ```
-
 ---
 
 #### Passo 3: Como Testar
@@ -441,6 +440,56 @@ restart:
 - **Extensão Raspberry Pi Pico** (para desenvolvimento com Raspberry Pi Pico)
 - **Raspberry Pi Pico SDK** (versão 1.5.1)
 - Verifique a Imagem: A imagem definida no `bitmap_128x64` será exibida no Display OLED.
+
+---
+
+## Casos de Teste Adicionados
+Foram implementados os seguintes casos de teste para validar as funcionalidades do display:
+
+- Exibição de Texto:
+
+  - Exibe três mensagens no display:
+
+    ```c
+    "Bem Vindo,Vamos "
+    "Iniciar O Teste"
+    "da Biblioteca. "
+    ```
+  - Aguarda 2 segundos antes de prosseguir.
+
+- Desenho de Retângulos:
+
+  - Desenha um retângulo grande (117x53 pixels) no centro do display.
+
+  - Desenha quatro retângulos menores nos cantos do display.
+
+  - Aguarda 2 segundos entre cada etapa.
+
+- Desenho de Círculos:
+
+  - Desenha um círculo grande no centro do display.
+  
+  - Desenha quatro círculos menores nos cantos do display.
+  
+  - Aguarda 2 segundos entre cada etapa.
+
+- Combinação de Retângulos e Círculos:
+
+  - Desenha quatro retângulos nos cantos e um círculo no centro do display.
+  
+  - Aguarda 2 segundos antes de prosseguir.
+
+- Renderização de Bitmap:
+
+  - Renderiza um bitmap de 128x64 pixels no display.
+  
+  - Aguarda 5 segundos para visualização.
+
+- Finalização:
+
+  - Exibe a mensagem "Teste Finalizado." no display.
+  
+  - Aguarda 2 segundos antes de reiniciar o teste.
 
 ---
 
