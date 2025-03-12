@@ -1,8 +1,8 @@
-## Configurando e Usando o Display OLED da BitDogLab com Linguagem C
+## Configurando e Usando o Display OLED da BitDogLab
 
-![Virtus](images/VirtusCC.png)
-
----
+<p align="center">
+  <img src="images/VirtusCC.png" alt="Virtus">
+</p>
 
 ## Autores
 
@@ -25,7 +25,6 @@ Neste projeto, vamos configurar e programar o Display OLED da BitDogLab utilizan
 
 ![Placa](images/Placa_profile.png)
 
----
 
 ## Desenvolvimento
 
