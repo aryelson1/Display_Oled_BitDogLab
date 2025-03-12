@@ -1,39 +1,64 @@
-# Display OLED
-
 ## Atividade: Configurando e Usando o Display OLED da BitDogLab com Linguagem C
 
-A seguir, apresentaremos um passo a passo para configurar e programar o Display OLED da BitDogLab utilizando a linguagem C. Vamos criar um programa que escreve uma mensagem no display, explorando as funções básicas de inicialização, configuração e manipulação de texto.
+![Virtus](images/VirtusCC.png)
 
-### Objetivo:
+---
 
-Desenvolver um programa que configure o Display OLED da BitDogLab e exiba uma mensagem personalizada. O programa deve inicializar a comunicação com o display, configurar os parâmetros de operação e atualizar a tela com a mensagem desejada.
+## Autores
 
-### Desenvolvimento:
+- [Aryelson Gonçalves](https://github.com/aryelson1)  
 
-**Passo 1:** Configuração do Ambiente
+- [Guilherme Santos](https://github.com/GuilhermexL)  
+
+---
+
+## Objetivo
+
+Neste projeto, vamos configurar e programar o Display OLED da BitDogLab utilizando a linguagem C. O objetivo é criar um programa que inicialize o display, configure os parâmetros de operação e exiba uma mensagem personalizada. O programa deve:
+- Inicializar a comunicação com o display.
+- Configurar os parâmetros de operação.
+- Atualizar a tela com a mensagem desejada.
+
+---
+
+## Arquitetura do Projeto
+
+![Placa](images/Placa_profile.png)
+
+---
+
+## Desenvolvimento
+
+### Passo 1: Configuração do Ambiente
 
 Antes de iniciar a programação, certifique-se de que o ambiente de desenvolvimento está configurado:
 
 - Conecte a BitDogLab ao computador utilizando um cabo USB.
 - Abra o VS Code e carregue o projeto com a estrutura de pastas para compilar e executar código em C na BitDogLab.
 - Verifique se as bibliotecas necessárias estão instaladas:
-  - [ssd1306.h](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306.h) para reconhecer as funções do código C. OBS: Esta biblioteca está disponível no link ativo.
-  - [ssd1306 font.h](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306_font.h) para obter os desenhos no display para cada caractere singular. Disponível no link ativo.
-  - [ssd1306_i2c.h](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306_i2c.h) para controlar o Display OLED. Disponível no link ativo.
-  - [ssd1306_i2c.c](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306_i2c.c) para declarar as funções ativas do código C. Disponível no link ativo.
-  - Certifique-se de incluir os arquivos ssd1306.h, ssd1306_font.h, ssd1306_i2c.h e ssd1306_i2c.c numa pasta separada (de nome “inc”) dentro do projeto.
-  - Drivers para comunicação I2C.
+  - **ssd1306.h**: Para reconhecer as funções do código C. [Link](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306.h).
+  - **ssd1306_font.h**: Para obter os desenhos no display para cada caractere. [Link](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306_font.h).
+  - **ssd1306_i2c.h**: Para controlar o Display OLED. [Link](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306_i2c.h).
+  - **ssd1306_i2c.c**: Para declarar as funções ativas do código C. [Link](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/inc/ssd1306_i2c.c).
+  - Inclua os arquivos `ssd1306.h`, `ssd1306_font.h`, `ssd1306_i2c.h` e `ssd1306_i2c.c` em uma pasta chamada `inc` dentro do projeto.
+  - Instale os drivers para comunicação I2C.
 
-**Passo 2:** Entendimento da Configuração do Hardware
+---
+
+### Passo 2: Entendimento da Configuração do Hardware
 
 - O Display OLED está conectado ao barramento I2C da BitDogLab através dos seguintes pinos:
-  - SDA: GPIO14
-  - SCL: GPIO15
-- O endereço do Display OLED é 0x3C.
+  - **SDA**: GPIO14
+  - **SCL**: GPIO15
+- O endereço do Display OLED é **0x3C**.
 
-**Passo 3:** Escrevendo o Código
+---
 
-- Inicialização do I2C e do Display OLED – Inclua as bibliotecas necessárias e inicialize a comunicação com o display:
+### Passo 3: Escrevendo o Código
+
+#### Inicialização do I2C e do Display OLED
+
+Inclua as bibliotecas necessárias e inicialize a comunicação com o display:
 
 ```c
 #include <stdio.h>
@@ -80,11 +105,12 @@ int main()
 restart:
 ```
 
-- Exibição de Mensagem no Display – Crie uma função para escrever texto no Display OLED (no arquivo ssd1306_i2c.c) e chame-a no código principal:
+#### Exibição de Mensagem no Display
+
+Crie uma função para escrever texto no Display OLED (no arquivo `ssd1306_i2c.c`) e chame-a no código principal:
 
 ```c
 // Desenha uma string, chamando a função de desenhar caractere várias vezes
-
 void ssd1306_draw_string(uint8_t *ssd, int16_t x, int16_t y, char *string) {
     if (x > ssd1306_width - 8 || y > ssd1306_height - 8) {
         return;
@@ -120,39 +146,47 @@ char *text[] = {
 
 O código completo pode ser acessado [neste link](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/display_oled.c).
 
-**Passo 4:** Compilação e Execução
+---
+
+### Passo 4: Compilação e Execução
 
 - Compile o código no VS Code.
 - Carregue o programa na BitDogLab.
 - Observe a mensagem "Bem-vindos!" e "Embarcatech" no Display OLED.
 
-### Exploração Adicional:
+---
+
+## Exploração Adicional
 
 - Modifique a mensagem para exibir seu nome ou outro texto personalizado.
-- Experimente mudar a posição do texto no display ajustando os valores de x e y.
+- Experimente mudar a posição do texto no display ajustando os valores de `x` e `y`.
 - Tente adicionar animações simples, como rolagem de texto ou texto piscando.
 
-### Dica Importante:
+---
 
-Sempre chame a função render_on_display após modificar o buffer do display para garantir que as alterações sejam exibidas.
+## Dica Importante
 
-## Atividade: Desenhando Linhas no Display OLED da BitDogLab com o Algoritmo de Bresenham
+Sempre chame a função `render_on_display` após modificar o buffer do display para garantir que as alterações sejam exibidas.
+
+---
+
+## Desenhando Linhas no Display OLED da BitDogLab com o Algoritmo de Bresenham
 
 Nesta atividade, exploraremos como desenhar linhas no Display OLED da BitDogLab utilizando a linguagem C. Para isso, aplicaremos o algoritmo de Bresenham, amplamente usado em sistemas gráficos por sua eficiência no cálculo de pontos de uma linha reta.
 
-### Objetivo:
+### Objetivo
 
 - Compreender como um algoritmo pode ser implementado para trabalhar com gráficos baseados em pixels.
 - Aprender a manipular pixels no Display OLED.
 - Estimular o raciocínio matemático aplicado à programação.
 
-Esta atividade é ideal para introduzir conceitos de gráficos computacionais e controle de hardware gráfico.
+---
 
-### Desenvolvimento:
+### Desenvolvimento
 
-**Passo 1:** Função do Algoritmo de Bresenham
+#### Passo 1: Função do Algoritmo de Bresenham
 
-O algoritmo de Bresenham calcula os pontos de uma linha entre dois pontos cartesianos (x_0, y_0) e (x_1, y_1) e acende os pixels correspondentes no display.
+O algoritmo de Bresenham calcula os pontos de uma linha entre dois pontos cartesianos `(x_0, y_0)` e `(x_1, y_1)` e acende os pixels correspondentes no display.
 
 ```c
 // Função do Algoritmo de Bresenham
@@ -187,18 +221,20 @@ void ssd1306_draw_line(uint8_t *ssd, int x_0, int y_0, int x_1, int y_1, bool se
 <details>
 
 <summary>Comentários do Código</summary>
-  
+
 ### Explicando as variáveis:
 
-- dx e dy: Distâncias absolutas em cada eixo, definindo a inclinação da linha.
-- sx e sy: Direção de movimento nos eixos x e y, dependendo do ponto inicial e final.
-- Erro acumulado (error): Usado para decidir se o próximo ponto avança no eixo principal ou secundário.
-- Chamada de ssd1306_set_pixel: Marca cada ponto da linha no buffer do display.
+- **dx e dy**: Distâncias absolutas em cada eixo, definindo a inclinação da linha.
+- **sx e sy**: Direção de movimento nos eixos x e y, dependendo do ponto inicial e final.
+- **Erro acumulado (error)**: Usado para decidir se o próximo ponto avança no eixo principal ou secundário.
+- **Chamada de ssd1306_set_pixel**: Marca cada ponto da linha no buffer do display.
 </details>
 
-**Passo 2:** Programa Principal
+---
 
-Este programa utiliza a função de Bresenham para desenhar uma linha no display, conectando os pontos (10, 10) e (100, 50).
+#### Passo 2: Programa Principal
+
+Este programa utiliza a função de Bresenham para desenhar uma linha no display, conectando os pontos `(10, 10)` e `(100, 50)`.
 
 ```c
 #include <stdio.h>
@@ -261,45 +297,42 @@ restart:
 
 ### Explicando cada parte:
 
-- Inicialização do I2C:
+- **Inicialização do I2C**:
   - Configura a comunicação I2C no barramento correto (SDA: GPIO14, SCL: GPIO15).
   - Ajusta a velocidade para 400 kHz.
-- Inicialização do Display OLED:
-  - Usa ssd1306_init para preparar o display.
-- Chamada de ssd1306_draw_line:
+- **Inicialização do Display OLED**:
+  - Usa `ssd1306_init` para preparar o display.
+- **Chamada de ssd1306_draw_line**:
   - Desenha a linha no buffer usando a função de Bresenham.
-- Atualização do Display:
-  - Chama render_on_display para exibir os dados do buffer no hardware.
-
+- **Atualização do Display**:
+  - Chama `render_on_display` para exibir os dados do buffer no hardware.
 </details>
 
-### Exploração Adicional:
+---
+
+### Exploração Adicional
 
 - Desenhe múltiplas linhas para criar figuras geométricas, como triângulos ou retângulos.
 - Modifique os pontos de início e fim para explorar diferentes inclinações de linhas.
 - Use botões ou um joystick para desenhar linhas interativamente no display.
 
-### Dica Importante:
+---
 
-Lembre-se de sempre chamar a função render_on_display após modificar o buffer para que as alterações sejam exibidas no display.
+## Dica Importante
 
-## Atividade: Exibindo Bitmaps no Display OLED da BitDogLab
+Lembre-se de sempre chamar a função `render_on_display` após modificar o buffer para que as alterações sejam exibidas no display.
+
+---
+
+## Exibindo Bitmaps no Display OLED da BitDogLab
 
 Nesta atividade, vamos aprender a exibir uma imagem monocromática no Display OLED presente na BitDogLab. As imagens serão importadas como bitmaps no formato 128x64, adequado para a resolução do display. Essa atividade é uma excelente oportunidade para entender como gráficos são manipulados em dispositivos embarcados.
 
-Para representar um bitmap monocromático no Display OLED, precisamos traduzir a imagem para uma matriz de bytes. Cada byte da matriz representa uma coluna de 8 pixels (uma "página" vertical) no display, seguindo o modelo de mapeamento do controlador SSD1306. Este formato compacto e eficiente permite que gráficos sejam exibidos diretamente no hardware.
+---
 
-A seguir, apresentaremos um guia detalhado que inclui:
+### Desenvolvimento
 
-- Como criar ou converter imagens para o formato 128x64 monocromático.
-- Como estruturar e integrar a matriz de bytes no código.
-- Como exibir o bitmap no Display OLED utilizando linguagem C.
-
-Ao final, você será capaz de importar e exibir imagens personalizadas no display, explorando novas possibilidades para suas aplicações gráficas embarcadas!
-
-### Desenvolvimento:
-
-**Passo 1:** Converter a Imagem para Bitmap
+#### Passo 1: Converter a Imagem para Bitmap
 
 - Use uma ferramenta gráfica (como GIMP ou um conversor online) para criar ou editar uma imagem de 128x64 pixels.
 - Exporte a imagem no formato monocromático (1-bit, preto e branco) e salve-a como uma matriz de bytes.
@@ -317,7 +350,9 @@ const uint8_t bitmap_128x64[] = {
 
 ![Figura](images/bitmap_info.png)
 
-**Passo 2:** Código para Renderizar o Bitmap no Display OLED
+---
+
+#### Passo 2: Código para Renderizar o Bitmap no Display OLED
 
 - Função para Desenhar o Bitmap – Crie uma função que copie os dados do bitmap para o buffer do display.
 
@@ -332,7 +367,7 @@ void ssd1306_draw_bitmap(ssd1306_t *ssd, const uint8_t *bitmap) {
 }
 ```
 
-- Programa Principal – Use a função ssd1306_draw_bitmap para carregar e exibir o bitmap no display.
+- Programa Principal – Use a função `ssd1306_draw_bitmap` para carregar e exibir o bitmap no display.
 
 ```c
 #include <stdio.h>
@@ -398,21 +433,43 @@ restart:
 }
 ```
 
-**Passo 3:** Como Testar
+---
 
-- Carregue o Programa: Compile o código e envie para a BitDogLab usando seu ambiente de desenvolvimento.
-- Verifique a Imagem: A imagem definida no bitmap_128x64 será exibida no Display OLED.
+#### Passo 3: Como Testar
 
-### Dicas Adicionais:
+- **Visual Studio Code** (ou outra IDE compatível)
+- **Extensão Raspberry Pi Pico** (para desenvolvimento com Raspberry Pi Pico)
+- **Raspberry Pi Pico SDK** (versão 1.5.1)
+- Verifique a Imagem: A imagem definida no `bitmap_128x64` será exibida no Display OLED.
 
-- Ferramenta para Gerar Bitmaps:
+---
+
+## Dicas Adicionais
+
+- **Ferramenta para Gerar Bitmaps**:
   - Use o GIMP:
     - Crie uma imagem de 128x64 pixels.
-    - Exporta como .xbm (C header file). O GIMP gera automaticamente um array de bytes para incluir no código.
-- Formato de tamanho:
+    - Exporta como `.xbm` (C header file). O GIMP gera automaticamente um array de bytes para incluir no código.
+- **Formato de tamanho**:
   - Certifique-se de que o tamanho do array seja exatamente 128x64 / 8 = 1024 bytes.
 
-### Exploração Adicional:
+---
+
+## Exploração Adicional
 
 - Combine a exibição de bitmaps com outras funções, como desenhar texto ou linhas, para criar interfaces gráficas dinâmicas.
 - Com isso, você terá uma forma eficiente de exibir bitmaps no Display OLED da BitDogLab usando C!
+
+Aqui está a **Conclusão** para o seu README:
+
+---
+
+## Conclusão
+
+Este projeto demonstra como configurar e utilizar o Display OLED da BitDogLab com a linguagem C, explorando funcionalidades como exibição de texto, desenho de linhas com o algoritmo de Bresenham e renderização de bitmaps. Através dessas atividades, foi possível compreender os fundamentos da comunicação I2C, manipulação de gráficos em dispositivos embarcados e a integração de hardware e software para criar interfaces visuais simples e eficientes.
+
+As técnicas apresentadas podem ser expandidas para projetos mais complexos, como a criação de menus interativos, exibição de gráficos dinâmicos ou integração com sensores e outros periféricos. O Display OLED, com sua resolução de 128x64 pixels, oferece uma plataforma versátil para aplicações que exigem feedback visual em sistemas embarcados.
+
+Com isso, você está preparado para explorar novas possibilidades e implementar soluções criativas utilizando o Display OLED da BitDogLab!
+
+---
