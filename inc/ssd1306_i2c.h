@@ -10,7 +10,7 @@
 
 #define ssd1306_i2c_address _u(0x3C) // Define o endereço do i2c do display
 
-#define ssd1306_i2c_clock 400 // Define o tempo do clock (pode ser aumentado)
+#define ssd1306_i2c_clock 600 // Define o tempo do clock (pode ser aumentado)
 
 // Comandos de configuração (endereços)
 #define ssd1306_set_memory_mode _u(0x20)

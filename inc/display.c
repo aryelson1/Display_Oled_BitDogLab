@@ -1,21 +1,21 @@
-#include "display.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "pico/stdlib.h"
-#include "hardware/i2c.h"
+#include "display.h" // Inclui o cabeçalho para manipulação do display
+#include <string.h>  // Biblioteca para manipulação de strings
+#include <stdio.h>   // Biblioteca para entrada e saída de dados
+#include <stdlib.h>  // Biblioteca para funções padrão, como alocação de memória
+#include <math.h>    // Biblioteca para funções matemáticas
+#include "pico/stdlib.h" // Biblioteca para uso da Raspberry Pi Pico
+#include "hardware/i2c.h" // Biblioteca para comunicação I2C
 
-#define WIDTH 128 // Largura do display
-#define HEIGHT 64 // Altura do display
+#define WIDTH 128 // Define a largura do display como 128 pixels
+#define HEIGHT 64 // Define a altura do display como 64 pixels
 
-const uint I2C_SDA = 14;
-const uint I2C_SCL = 15;
+const uint I2C_SDA = 14; // Define o pino de dados SDA do I2C
+const uint I2C_SCL = 15; // Define o pino de clock SCL do I2C
 
-uint8_t ssd[ssd1306_buffer_length];
-ssd1306_t ssd_bm;
+uint8_t ssd[ssd1306_buffer_length]; // Buffer de dados para o display
+ssd1306_t ssd_bm; // Estrutura para armazenar dados do display
 
-// Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
+// Estrutura que define a área de renderização do display
 struct render_area frame_area = {
     start_column : 0,
     end_column : ssd1306_width - 1,
@@ -23,113 +23,103 @@ struct render_area frame_area = {
     end_page : ssd1306_n_pages - 1
 };
 
+// Inicializa o display e a comunicação I2C
 void display_init()
 {
-    stdio_init_all(); // Inicializa os tipos stdio padrão presentes ligados ao binário
+    stdio_init_all(); // Inicializa o sistema padrão de entrada e saída
 
-    // Inicialização do i2c
-    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
+    i2c_init(i2c1, ssd1306_i2c_clock * 1000); // Inicializa o I2C na frequência especificada
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Configura o pino SDA para função I2C
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Configura o pino SCL para função I2C
+    gpio_pull_up(I2C_SDA); // Ativa pull-up no pino SDA
+    gpio_pull_up(I2C_SCL); // Ativa pull-up no pino SCL
 
-    // Processo de inicialização completo do OLED SSD1306
-    ssd1306_init();
-
-    calculate_render_area_buffer_length(&frame_area);
+    ssd1306_init(); // Inicializa o display OLED SSD1306
+    calculate_render_area_buffer_length(&frame_area); // Calcula o tamanho do buffer da área de renderização
 }
 
+// Limpa o display preenchendo o buffer com zeros
 void display_clear()
 {
-    // zera o display inteiro
-    memset(ssd, 0, ssd1306_buffer_length);
-    render_on_display(ssd, &frame_area);
+    memset(ssd, 0, ssd1306_buffer_length); // Zera todos os pixels do buffer
+    render_on_display(ssd, &frame_area); // Atualiza o display
 }
 
+// Renderiza o buffer atual no display
 void display_render()
 {
-    render_on_display(ssd, &frame_area);
+    render_on_display(ssd, &frame_area); // Atualiza o display com o buffer de pixels
 }
 
-// Função para desenhar um retângulo
+// Desenha um retângulo na tela, podendo ser preenchido ou apenas o contorno
 void draw_rectangle(int x0, int y0, int x1, int y1, bool filled, bool set)
 {
     if (filled)
     {
-        // Preenche o retângulo
-        for (int y = y0; y <= y1; y++)
+        for (int y = y0; y <= y1; y++) // Percorre a altura
         {
-            for (int x = x0; x <= x1; x++)
+            for (int x = x0; x <= x1; x++) // Percorre a largura
             {
-                ssd1306_set_pixel(ssd, x, y, set);
+                ssd1306_set_pixel(ssd, x, y, set); // Define cada pixel dentro do retângulo
             }
         }
     }
     else
     {
-        // Desenha apenas o contorno
         ssd1306_draw_line(ssd, x0, y0, x1, y0, set); // Linha superior
         ssd1306_draw_line(ssd, x0, y1, x1, y1, set); // Linha inferior
         ssd1306_draw_line(ssd, x0, y0, x0, y1, set); // Linha esquerda
         ssd1306_draw_line(ssd, x1, y0, x1, y1, set); // Linha direita
     }
-
 }
 
+// Testa a exibição de pixels no display
 void test_display_pixels()
 {
-    // Matriz para representar as posições dos pixels
-    int matrix[HEIGHT][WIDTH];
+    int matrix[HEIGHT][WIDTH]; // Matriz de pixels do display
 
-    // Itera por todas as posições do display
     for (int y = 0; y < HEIGHT; y++)
     {
         for (int x = 0; x < WIDTH; x++)
         {
-            // Liga o pixel no display
-            ssd1306_set_pixel(ssd, x, y, true);
-
-            display_render();
-            // Marca a posição na matriz
-            matrix[y][x] = 1;
+            ssd1306_set_pixel(ssd, x, y, true); // Acende cada pixel
+            display_render(); // Atualiza o display
+            matrix[y][x] = 1; // Marca pixel na matriz
         }
     }
 
-    // Exibir a matriz no console (depende do ambiente suportar prints)
     for (int y = 0; y < HEIGHT; y++)
     {
-        printf("%i",y);
+        printf("%i", y);
         for (int x = 0; x < WIDTH; x++)
         {
-            printf(matrix[y][x] ? "#" : ".");
+            printf(matrix[y][x] ? "#" : "."); // Exibe matriz no console
         }
-        printf("\n "); // Nova linha para cada linha do display
+        printf("\n");
     }
 }
 
+// Exibe um array de strings no display
 void print_text_display(char *text[], uint count)
 {
-    display_clear();
     int y = 0;
     for (uint i = 0; i < count; i++)
     {
-        ssd1306_draw_string(ssd, 5, y, text[i]);
-        y += 8;
-        display_render();
+        ssd1306_draw_string(ssd, 5, y, text[i]); // Escreve cada linha de texto
+        y += 10; // Avança a posição vertical
+        display_render(); // Atualiza o display
     }
 }
 
+// Exibe uma imagem no display
 void print_image_display(uint8_t bitmap_128x64[])
 {
-    ssd1306_draw_bitmap(&ssd_bm, bitmap_128x64);
+    ssd1306_draw_bitmap(&ssd_bm, bitmap_128x64); // Renderiza o bitmap na tela
 }
 
-// Função para desenhar um círculo
+// Desenha um círculo usando o algoritmo de Bresenham
 void draw_circle(int x0, int y0, int radius, bool set)
 {
-
-    display_clear();
     int x = radius;
     int y = 0;
     int err = 0;
@@ -156,15 +146,5 @@ void draw_circle(int x0, int y0, int radius, bool set)
             err -= 2 * x + 1;
         }
     }
-
-    display_render();
-}
-
-// Função para desenhar um número
-void draw_number(uint8_t *ssd, int16_t x, int16_t y, int number)
-{
-    char buffer[12];                                // Buffer para armazenar o número como string
-    snprintf(buffer, sizeof(buffer), "%d", number); // Converte o número para string
-    ssd1306_draw_string(ssd, x, y, buffer);         // Desenha a string no display
 }
 
