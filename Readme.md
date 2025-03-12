@@ -1,4 +1,4 @@
-## Atividade: Configurando e Usando o Display OLED da BitDogLab com Linguagem C
+## Configurando e Usando o Display OLED da BitDogLab com Linguagem C
 
 ![Virtus](images/VirtusCC.png)
 
