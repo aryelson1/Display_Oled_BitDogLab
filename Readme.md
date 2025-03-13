@@ -25,6 +25,15 @@ Neste projeto, vamos configurar e programar o Display OLED da BitDogLab utilizan
 
 ![Placa](images/Placa_profile.png)
 
+1. Hardware Utilizado
+
+- 1x Placa BitDogLab
+- Display_oled
+
+2. Conexões
+
+- I2C_SDA: Pino GPIO14
+- I2C_SCL: Pino GPIO15
 
 ## Desenvolvimento
 
