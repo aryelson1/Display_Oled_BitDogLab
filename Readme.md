@@ -35,6 +35,72 @@ Neste projeto, vamos configurar e programar o Display OLED da BitDogLab utilizan
 - I2C_SDA: Pino GPIO14
 - I2C_SCL: Pino GPIO15
 
+---
+
+## Funcionalidades
+
+### `display_init()`
+
+- [ ] **Descrição:** Inicializa o display e a comunicação I2C.
+- [ ] **Detalhes:**
+  - Configura os pinos SDA e SCL para comunicação I2C.
+  - Inicializa o display OLED SSD1306.
+  - Calcula o tamanho do buffer da área de renderização.
+
+
+### `display_clear()`
+
+- [ ] **Descrição:** Limpa o display preenchendo o buffer com zeros.
+- [ ] **Detalhes:**
+  - Zera todos os pixels do buffer.
+  - Atualiza o display com o buffer limpo
+  - Calcula o tamanho do buffer da área de renderização.
+
+### `display_render()`
+
+- [ ] **Descrição:** Renderiza o buffer atual no display.
+- [ ] **Detalhes:**
+  - Atualiza o display com o conteúdo atual do buffer de pixels.
+
+### `draw_rectangle(int x0, int y0, int x1, int y1, bool filled, bool set)`
+
+- [ ] **Descrição:** Desenha um retângulo na tela, podendo ser preenchido ou apenas o contorno.
+- [ ] **Detalhes:**
+  - Se filled for verdadeiro, preenche o retângulo com pixels.
+  - Se filled for falso, desenha apenas o contorno do retângulo.
+  - Define cada pixel dentro do retângulo ou apenas as bordas, dependendo do parâmetro filled.
+
+### `test_display_pixels()`
+
+- [ ] **Descrição:** Testa a exibição de pixels no display.
+- [ ] **Detalhes:**
+  - Acende cada pixel do display sequencialmente.
+  - Atualiza o display após cada pixel ser aceso.
+  - Exibe uma matriz de pixels no console para depuração.
+
+### `print_text_display(char *text[], uint count)`
+
+- [ ] **Descrição:** Exibe um array de strings no display.
+- [ ] **Detalhes:**
+  - Escreve cada linha de texto no display, avançando a posição vertical a cada linha.
+  - Atualiza o display após cada linha ser escrita.
+
+### `print_image_display(uint8_t bitmap_128x64[])`
+
+- [ ] **Descrição:** Exibe uma imagem no display.
+- [ ] **Detalhes:**
+  - Renderiza um bitmap de 128x64 pixels na tela.
+  - Utiliza a função ssd1306_draw_bitmap para desenhar a imagem.
+
+### `draw_circle(int x0, int y0, int radius, bool set)`
+
+- [ ] **Descrição:** Desenha um círculo usando o algoritmo de Bresenham.
+- [ ] **Detalhes:**
+  - Desenha 8 pixels simétricos para formar o círculo.
+  - Atualiza as coordenadas e o erro para desenhar o círculo de forma eficiente.
+
+---
+
 ## Desenvolvimento
 
 ### Passo 1: Configuração do Ambiente
