@@ -68,72 +68,54 @@ Inclua as bibliotecas necessárias e inicialize a comunicação com o display:
 #include "pico/binary_info.h"
 #include "inc/ssd1306.h"
 #include "hardware/i2c.h"
-
-const uint I2C_SDA = 14;
-const uint I2C_SCL = 15;
+#include "inc/display.h"
+#include "tests/display_test.h"
 
 int main()
 {
-    stdio_init_all();   // Inicializa os tipos stdio padrão presentes ligados ao binário
 
-    // Inicialização do i2c
-    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
+	display_init();
+  display_clear();
 
-    // Processo de inicialização completo do OLED SSD1306
-    ssd1306_init();
+  while (true)
+  {
+  		sleep_ms(1000);
+  }
 
-    // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
-    struct render_area frame_area = {
-        start_column : 0,
-        end_column : ssd1306_width - 1,
-        start_page : 0,
-        end_page : ssd1306_n_pages - 1
-    };
+	return 0;
 
-    calculate_render_area_buffer_length(&frame_area);
+}
 
-    // zera o display inteiro
-    uint8_t ssd[ssd1306_buffer_length];
-    memset(ssd, 0, ssd1306_buffer_length);
-    render_on_display(ssd, &frame_area);
-
-restart:
 ```
 
 #### Exibição de Mensagem no Display
 
-Crie uma função para escrever texto no Display OLED (no arquivo `ssd1306_i2c.c`) e chame-a no código principal:
+Função para escrever texto no Display OLED (no arquivo `display.c`) e chame-a no código principal:
 
 ```c
-// Desenha uma string, chamando a função de desenhar caractere várias vezes
-void ssd1306_draw_string(uint8_t *ssd, int16_t x, int16_t y, char *string) {
-    if (x > ssd1306_width - 8 || y > ssd1306_height - 8) {
-        return;
-    }
 
-    while (*string) {
-        ssd1306_draw_char(ssd, x, y, *string++);
-        x += 8;
+// Exibe um array de strings no display
+void print_text_display(char *text[], uint count)
+{
+    int y = 0;
+    for (uint i = 0; i < count; i++)
+    {
+        ssd1306_draw_string(ssd, 5, y, text[i]); // Escreve cada linha de texto
+        y += 10; // Avança a posição vertical
+        display_render(); // Atualiza o display
     }
 }
+
 ```
 
 ```c
-char *text[] = {
+    char *text[] = {
         "  Bem-vindos!   ",
-        "  Embarcatech   "};
+        "  VIRTUS CC   "};
 
-    int y = 0;
-    for (uint i = 0; i < count_of(text); i++)
-    {
-        ssd1306_draw_string(ssd, 5, y, text[i]);
-        y += 8;
-    }
-    render_on_display(ssd, &frame_area);
+    uint count = sizeof(messages) / sizeof(messages[0]);
+    print_text_display(text, count);
+
 
     while(true) {
         sleep_ms(1000);
@@ -142,16 +124,13 @@ char *text[] = {
     return 0;
 }
 ```
-
-O código completo pode ser acessado [neste link](https://github.com/BitDogLab/BitDogLab-C/blob/main/display_oled/display_oled.c).
-
 ---
 
 ### Passo 4: Compilação e Execução
 
 - Compile o código no VS Code.
 - Carregue o programa na BitDogLab.
-- Observe a mensagem "Bem-vindos!" e "Embarcatech" no Display OLED.
+- Observe a mensagem "Bem-vindos!" e "VIRTUS CC" no Display OLED.
 
 ---
 
@@ -165,7 +144,7 @@ O código completo pode ser acessado [neste link](https://github.com/BitDogLab/B
 
 ## Dica Importante
 
-Sempre chame a função `render_on_display` após modificar o buffer do display para garantir que as alterações sejam exibidas.
+Sempre chame a função `display_render();` após modificar o buffer do display para garantir que as alterações sejam exibidas.
 
 ---
 
@@ -183,149 +162,9 @@ Nesta atividade, exploraremos como desenhar linhas no Display OLED da BitDogLab 
 
 ### Desenvolvimento
 
-#### Passo 1: Função do Algoritmo de Bresenham
-
-O algoritmo de Bresenham calcula os pontos de uma linha entre dois pontos cartesianos `(x_0, y_0)` e `(x_1, y_1)` e acende os pixels correspondentes no display.
-
-```c
-// Função do Algoritmo de Bresenham
-void ssd1306_draw_line(uint8_t *ssd, int x_0, int y_0, int x_1, int y_1, bool set) {
-    int dx = abs(x_1 - x_0); // Deslocamentos
-    int dy = -abs(y_1 - y_0);
-    int sx = x_0 < x_1 ? 1 : -1; // Direção de avanço
-    int sy = y_0 < y_1 ? 1 : -1;
-    int error = dx + dy; // Erro acumulado
-    int error_2;
-
-    while (true) {
-        ssd1306_set_pixel(ssd, x_0, y_0, set); // Acende pixel no ponto atual
-        if (x_0 == x_1 && y_0 == y_1) {
-            break; // Verifica se o ponto final foi alcançado
-        }
-
-        error_2 = 2 * error; // Ajusta o erro acumulado
-
-        if (error_2 >= dy) {
-            error += dy;
-            x_0 += sx; // Avança na direção x
-        }
-        if (error_2 <= dx) {
-            error += dx;
-            y_0 += sy; // Avança na direção y
-        }
-    }
-}
-```
-
-<details>
-
-<summary>Comentários do Código</summary>
-
-### Explicando as variáveis:
-
-- **dx e dy**: Distâncias absolutas em cada eixo, definindo a inclinação da linha.
-- **sx e sy**: Direção de movimento nos eixos x e y, dependendo do ponto inicial e final.
-- **Erro acumulado (error)**: Usado para decidir se o próximo ponto avança no eixo principal ou secundário.
-- **Chamada de ssd1306_set_pixel**: Marca cada ponto da linha no buffer do display.
-</details>
-
----
-
-#### Passo 2: Programa Principal
-
-Este programa utiliza a função de Bresenham para desenhar uma linha no display, conectando os pontos `(10, 10)` e `(100, 50)`.
-
-```c
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include "pico/stdlib.h"
-#include "pico/binary_info.h"
-#include "inc/ssd1306.h"
-#include "hardware/i2c.h"
-
-const uint I2C_SDA = 14;
-const uint I2C_SCL = 15;
-
-int main()
-{
-    stdio_init_all();   // Inicializa os tipos stdio padrão presentes ligados ao binário
-
-    // Inicialização do i2c
-    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
-
-    // Processo de inicialização completo do OLED SSD1306
-    ssd1306_init();
-
-    // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
-    struct render_area frame_area = {
-        start_column : 0,
-        end_column : ssd1306_width - 1,
-        start_page : 0,
-        end_page : ssd1306_n_pages - 1
-    };
-
-    calculate_render_area_buffer_length(&frame_area);
-
-    // zera o display inteiro
-    uint8_t ssd[ssd1306_buffer_length];
-    memset(ssd, 0, ssd1306_buffer_length);
-    render_on_display(ssd, &frame_area);
-
-restart:
-
-    ssd1306_draw_line(ssd, 10, 10, 100, 50, true);
-    render_on_display(ssd, &frame_area);
-
-    while(true) {
-        sleep_ms(1000);
-    }
-
-    return 0;
-}
-```
-
-<details>
-
-<summary>Comentários do Código</summary>
-
-### Explicando cada parte:
-
-- **Inicialização do I2C**:
-  - Configura a comunicação I2C no barramento correto (SDA: GPIO14, SCL: GPIO15).
-  - Ajusta a velocidade para 400 kHz.
-- **Inicialização do Display OLED**:
-  - Usa `ssd1306_init` para preparar o display.
-- **Chamada de ssd1306_draw_line**:
-  - Desenha a linha no buffer usando a função de Bresenham.
-- **Atualização do Display**:
-  - Chama `render_on_display` para exibir os dados do buffer no hardware.
-</details>
-
----
-
-### Exploração Adicional
-
-- Desenhe múltiplas linhas para criar figuras geométricas, como triângulos ou retângulos.
-- Modifique os pontos de início e fim para explorar diferentes inclinações de linhas.
-- Use botões ou um joystick para desenhar linhas interativamente no display.
-
----
-
-## Dica Importante
-
-Lembre-se de sempre chamar a função `render_on_display` após modificar o buffer para que as alterações sejam exibidas no display.
-
----
-
 ## Exibindo Bitmaps no Display OLED da BitDogLab
 
-Nesta atividade, vamos aprender a exibir uma imagem monocromática no Display OLED presente na BitDogLab. As imagens serão importadas como bitmaps no formato 128x64, adequado para a resolução do display. Essa atividade é uma excelente oportunidade para entender como gráficos são manipulados em dispositivos embarcados.
+Exibir uma imagem monocromática no Display OLED presente na BitDogLab. As imagens serão importadas como bitmaps no formato 128x64, adequado para a resolução do display.
 
 ---
 
@@ -333,7 +172,7 @@ Nesta atividade, vamos aprender a exibir uma imagem monocromática no Display OL
 
 #### Passo 1: Converter a Imagem para Bitmap
 
-- Use uma ferramenta gráfica (como GIMP ou um conversor online) para criar ou editar uma imagem de 128x64 pixels.
+- Use uma ferramenta gráfica (como [image2cpp](https://javl.github.io/image2cpp/) ou um conversor online) para criar ou editar uma imagem de 128x64 pixels.
 - Exporte a imagem no formato monocromático (1-bit, preto e branco) e salve-a como uma matriz de bytes.
 - O resultado será uma matriz de bytes em formato hexadecimal, onde cada bit representa um pixel (1 para ligado, 0 para desligado).
 
@@ -377,38 +216,14 @@ void ssd1306_draw_bitmap(ssd1306_t *ssd, const uint8_t *bitmap) {
 #include "pico/binary_info.h"
 #include "inc/ssd1306.h"
 #include "hardware/i2c.h"
+#include "inc/display.h"
+#include "tests/display_test.h"
 
-const uint I2C_SDA = 14;
-const uint I2C_SCL = 15;
 
 int main()
 {
-    stdio_init_all();   // Inicializa os tipos stdio padrão presentes ligados ao binário
-
-    // Inicialização do i2c
-    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
-
-    // Processo de inicialização completo do OLED SSD1306
-    ssd1306_init();
-
-    // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
-    struct render_area frame_area = {
-        start_column : 0,
-        end_column : ssd1306_width - 1,
-        start_page : 0,
-        end_page : ssd1306_n_pages - 1
-    };
-
-    calculate_render_area_buffer_length(&frame_area);
-
-    // zera o display inteiro
-    uint8_t ssd[ssd1306_buffer_length];
-    memset(ssd, 0, ssd1306_buffer_length);
-    render_on_display(ssd, &frame_area);
+   	display_init();
+    display_clear();
 
 restart:
 
@@ -514,7 +329,7 @@ Aqui está a **Conclusão** para o seu README:
 
 ## Conclusão
 
-Este projeto demonstra como configurar e utilizar o Display OLED da BitDogLab com a linguagem C, explorando funcionalidades como exibição de texto, desenho de linhas com o algoritmo de Bresenham e renderização de bitmaps. Através dessas atividades, foi possível compreender os fundamentos da comunicação I2C, manipulação de gráficos em dispositivos embarcados e a integração de hardware e software para criar interfaces visuais simples e eficientes.
+Este projeto demonstra como configurar e utilizar o Display OLED da BitDogLab com a linguagem C, explorando funcionalidades como exibição de texto, desenho de linhas, quadrados, circulos e renderização de bitmaps. Através dessas funções, foi possível compreender os fundamentos da comunicação I2C, manipulação de gráficos em dispositivos embarcados e a integração de hardware e software para criar interfaces visuais simples e eficientes.
 
 As técnicas apresentadas podem ser expandidas para projetos mais complexos, como a criação de menus interativos, exibição de gráficos dinâmicos ou integração com sensores e outros periféricos. O Display OLED, com sua resolução de 128x64 pixels, oferece uma plataforma versátil para aplicações que exigem feedback visual em sistemas embarcados.
 
