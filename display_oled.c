@@ -7,7 +7,7 @@
 #include "inc/ssd1306.h"
 #include "hardware/i2c.h"
 #include "inc/display.h"
-#include "inc/display_test.h"
+#include "tests/display_test.h"
 
 
 int main()

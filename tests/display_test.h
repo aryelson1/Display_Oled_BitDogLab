@@ -1,7 +1,7 @@
 #ifndef DISPLAY_TEST_H
 #define DISPLAY_TEST_H
 
-#include "inc/display.h"
+#include "../inc/display.h"
 #include <ctype.h>
 #include <string.h>       // Biblioteca para manipulação de strings
 #include <stdio.h>        // Biblioteca para entrada e saída de dados
