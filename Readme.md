@@ -1,4 +1,4 @@
-## Configurando e Usando o Display OLED da BitDogLab
+# Configurando e Usando o Display OLED da BitDogLab
 
 <p align="center">
   <img src="images/VirtusCC.png" alt="Virtus">
