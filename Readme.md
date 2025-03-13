@@ -243,8 +243,6 @@ Exibir uma imagem monocromática no Display OLED presente na BitDogLab. As image
 
 ---
 
-### Desenvolvimento
-
 #### Passo 1: Converter a Imagem para Bitmap
 
 - Use uma ferramenta gráfica (como [image2cpp](https://javl.github.io/image2cpp/) ou um conversor online) para criar ou editar uma imagem de 128x64 pixels.
