@@ -120,30 +120,33 @@ void print_image_display(uint8_t bitmap_128x64[])
 // Desenha um círculo usando o algoritmo de Bresenham
 void draw_circle(int x0, int y0, int radius, bool set)
 {
-    int x = radius;
-    int y = 0;
-    int err = 0;
+    int x = radius; // Inicializa x com o valor do raio
+    int y = 0;      // Inicializa y com 0
+    int err = 0;    // Inicializa o erro com 0
 
+    // Loop enquanto x for maior ou igual a y
     while (x >= y)
     {
-        ssd1306_set_pixel(ssd, x0 + x, y0 + y, set);
-        ssd1306_set_pixel(ssd, x0 + y, y0 + x, set);
-        ssd1306_set_pixel(ssd, x0 - y, y0 + x, set);
-        ssd1306_set_pixel(ssd, x0 - x, y0 + y, set);
-        ssd1306_set_pixel(ssd, x0 - x, y0 - y, set);
-        ssd1306_set_pixel(ssd, x0 - y, y0 - x, set);
-        ssd1306_set_pixel(ssd, x0 + y, y0 - x, set);
-        ssd1306_set_pixel(ssd, x0 + x, y0 - y, set);
+        // Desenha 8 pixels simétricos para formar o círculo
+        ssd1306_set_pixel(ssd, x0 + x, y0 + y, set); // Quadrante 1
+        ssd1306_set_pixel(ssd, x0 + y, y0 + x, set); // Quadrante 2
+        ssd1306_set_pixel(ssd, x0 - y, y0 + x, set); // Quadrante 3
+        ssd1306_set_pixel(ssd, x0 - x, y0 + y, set); // Quadrante 4
+        ssd1306_set_pixel(ssd, x0 - x, y0 - y, set); // Quadrante 5
+        ssd1306_set_pixel(ssd, x0 - y, y0 - x, set); // Quadrante 6
+        ssd1306_set_pixel(ssd, x0 + y, y0 - x, set); // Quadrante 7
+        ssd1306_set_pixel(ssd, x0 + x, y0 - y, set); // Quadrante 8
 
+        // Atualiza o erro e as coordenadas x e y
         if (err <= 0)
         {
-            y += 1;
-            err += 2 * y + 1;
+            y += 1;              // Incrementa y
+            err += 2 * y + 1;    // Atualiza o erro
         }
         if (err > 0)
         {
-            x -= 1;
-            err -= 2 * x + 1;
+            x -= 1;              // Decrementa x
+            err -= 2 * x + 1;    // Atualiza o erro
         }
     }
 }

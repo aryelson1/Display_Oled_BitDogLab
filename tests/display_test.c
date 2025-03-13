@@ -1,59 +1,68 @@
 #include "display_test.h" // Inclui o cabeçalho para manipulação do display
 
-
+// Função para testar a função de desenhar um retângulo
 void test_draw_rectangle(int x0, int y0, int x1, int y1, bool filled, bool set)
 {
     draw_rectangle(x0, y0, x1, y1, filled, set);
 }
 
+// Função para testar a função de imprimir texto no display
 void test_print_text_display(char *text[], uint count)
 {
     print_text_display(text, count);
 }
 
+// Função para testar a função de desenhar um círculo
 void test_draw_circle(int x0, int y0, int radius, bool set)
 {
     draw_circle(x0, y0, radius, set);
 }
 
+// Função principal que executa todos os testes
 void all_test_run()
 {
-
-    // Cada Linha deve ter 16 caracteres. 16 tamanho do char x 4 tamanho da fonte = 64
+    // Mensagens de boas-vindas para exibir no display
     char *messages[] = {
         "Bem Vindo,Vamos ",
         "Iniciar O Teste",
         "da Biblioteca. "};
     uint count = sizeof(messages) / sizeof(messages[0]);
+    
+    // Exibe as mensagens no display
     test_print_text_display(messages, count);
-    sleep_ms(2000);
+    sleep_ms(2000); // Aguarda 2 segundos
 
+    // Limpa o display e desenha um retângulo
     display_clear();
     draw_rectangle(5, 5, 122, 58, false, true);
     display_render();
-    sleep_ms(2000);
+    sleep_ms(2000); // Aguarda 2 segundos
 
+    // Limpa o display e desenha quatro retângulos nos cantos
     display_clear();
     draw_rectangle(10, 10, 30, 30, false, true);  // Superior esquerdo
     draw_rectangle(90, 10, 110, 30, false, true); // Superior direito
     draw_rectangle(10, 40, 30, 60, false, true);  // Inferior esquerdo
     draw_rectangle(90, 40, 110, 60, false, true); // Inferior direito
     display_render();
-    sleep_ms(2000);
+    sleep_ms(2000); // Aguarda 2 segundos
 
+    // Limpa o display e desenha um círculo no centro
     display_clear();
     draw_circle(64, 32, 20, true);
     display_render();
-    sleep_ms(2000);
+    sleep_ms(2000); // Aguarda 2 segundos
 
+    // Limpa o display e desenha quatro círculos nos cantos
     display_clear();
     draw_circle(32, 16, 15, true); // Superior esquerdo
     draw_circle(96, 16, 15, true); // Superior direito
     draw_circle(32, 48, 15, true); // Inferior esquerdo
     draw_circle(96, 48, 15, true); // Inferior direito
     display_render();
-    sleep_ms(2000);
+    sleep_ms(2000); // Aguarda 2 segundos
 
+    // Limpa o display e desenha quatro retângulos e um círculo no centro
     display_clear();
     draw_rectangle(10, 10, 30, 30, false, true);  // Superior esquerdo
     draw_rectangle(90, 10, 110, 30, false, true); // Superior direito
@@ -61,8 +70,9 @@ void all_test_run()
     draw_rectangle(90, 40, 110, 60, false, true); // Inferior direito
     draw_circle(60, 32, 20, true);
     display_render();
-    sleep_ms(2000);
+    sleep_ms(2000); // Aguarda 2 segundos
 
+    // Bitmap de exemplo para exibir no display
     uint8_t bitmap_Virtus_128x64[] = {
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -127,16 +137,17 @@ void all_test_run()
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+    };
+
+    // Inicializa o display com o bitmap
     ssd1306_t ssd_bm;
     ssd1306_init_bm(&ssd_bm, 128, 64, false, 0x3C, i2c1);
     ssd1306_config(&ssd_bm);
     ssd1306_draw_bitmap(&ssd_bm, bitmap_Virtus_128x64);
-    sleep_ms(5000);
+    sleep_ms(5000); // Aguarda 5 segundos
 
-    restart:
-
-	display_init();
+    display_init();
     display_clear();
 
     char *messages2[] = {
@@ -144,6 +155,5 @@ void all_test_run()
         "Finalizado. "};
     uint count1 = sizeof(messages2) / sizeof(messages2[0]);
     test_print_text_display(messages2, count1);
-    sleep_ms(2000);
-
+    sleep_ms(2000); // Aguarda 2 segundos
 }
